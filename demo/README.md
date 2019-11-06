@@ -7,10 +7,25 @@ How It Works
 ------------
 The demo expects deep speech models in the Intermediate Representation (IR) format:
 
-It can be your own models or pre-trained model from OpenVINO Open Model Zoo.
-In the `models.lst` are the list of appropriate models for this demo
-that can be obtained via `Model downloader`.
-Please see more information about `Model downloader` [here](../model_downloader/README.md).
+It can be your own models, using pre-trained model via model downloader or download and convert pre-trained model by yourself.
+
+1. Download and convert pre-trained model by yourself
+    * Download the pre-trained model.
+      ```sh
+      wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.5.0/deepspeech-0.5.0-models.tar.gz | tar xvfz -
+      ```
+    * Convert the pre-trained model to Intermediate Representation (IR) by Model Optimizer with the following parameters.
+      ```sh
+      python3 ./mo_tf.py
+      --input_model=$dl_dir/deepspeech-0.5.0-models/output_graph.pb
+      --input=input_node,previous_state_h/read,previous_state_c/read
+      --input_shape=[1,16,19,26],[1,2048],[1,2048]
+      --output=Softmax,lstm_fused_cell/GatherNd,lstm_fused_cell/GatherNd_1
+      --freeze_placeholder_with_value=input_lengths->[16]
+      --disable_nhwc_to_nchw
+      ```
+2. Via model downloader
+    In the `models.lst` are the list of appropriate models for this demo that can be obtained via `Model downloader`. Please see more information about `Model downloader` [here](../model_downloader/README.md).
 
 Running
 -------
