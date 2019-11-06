@@ -32,9 +32,9 @@ Running
 Running the application with the `-h` option yields the following usage message:
 
 ```
-usage: deep_speech_demo.py [-h] -m MODEL -i AUDIO -a ALPHABET
-                                  [-l CPU_EXTENSION] 
-                                  [-d DEVICE]
+usage: deep_speech_demo.py [-h] -m MODEL -i AUDIO
+                           [-l CPU_EXTENSION]
+                           [-d DEVICE]
 
 Options:
   -h, --help            show this help message and exit
@@ -49,8 +49,6 @@ Options:
                         Optional. Specify a target device to infer on. CPU, GPU, FPGA, HDDL or MYRIAD is
                         acceptable. The demo will look for a suitable plugin for the device specified.
                         Default value is CPU
-  -a ALPHABET, --alphabet ALPHABET
-                        Required. Path to a alphabet file.
 ```
 
 Running Demo
@@ -58,7 +56,6 @@ Running Demo
 ```sh
 python3 deep_speech_demo.py -m <path_to_model>/output_graph.xml \
     -i <path_to_audio>/audio.wav \
-    -a alphabet_b.txt
 ```
 Only 16-bit, 16 kHz, mono-channel WAVE audio files are supported. One example wave file can be downloaded from https://github.com/jcsilva/docker-kaldi-gstreamer-server/raw/master/audio/1272-128104-0000.wav.
 
