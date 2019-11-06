@@ -10,7 +10,7 @@ The demo expects deep speech models in the Intermediate Representation (IR) form
 It can be your own models or pre-trained model from OpenVINO Open Model Zoo.
 In the `models.lst` are the list of appropriate models for this demo
 that can be obtained via `Model downloader`.
-Please see more information about `Model downloader` [here](../../../tools/downloader/README.md).
+Please see more information about `Model downloader` [here](../model_downloader/README.md).
 
 Running
 -------
