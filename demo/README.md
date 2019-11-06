@@ -16,12 +16,12 @@ It can be your own models, using pre-trained model via model downloader or downl
       ```
     * Convert the pre-trained model to Intermediate Representation (IR) by Model Optimizer with the following parameters.
       ```sh
-      python3 ./mo_tf.py
-      --input_model=$dl_dir/deepspeech-0.5.0-models/output_graph.pb
-      --input=input_node,previous_state_h/read,previous_state_c/read
-      --input_shape=[1,16,19,26],[1,2048],[1,2048]
-      --output=Softmax,lstm_fused_cell/GatherNd,lstm_fused_cell/GatherNd_1
-      --freeze_placeholder_with_value=input_lengths->[16]
+      python3 ./mo_tf.py \
+      --input_model=$dl_dir/deepspeech-0.5.0-models/output_graph.pb \
+      --input=input_node,previous_state_h/read,previous_state_c/read \
+      --input_shape=[1,16,19,26],[1,2048],[1,2048] \
+      --output=Softmax,lstm_fused_cell/GatherNd,lstm_fused_cell/GatherNd_1 \
+      --freeze_placeholder_with_value=input_lengths->[16] \
       --disable_nhwc_to_nchw
       ```
 2. Via model downloader
