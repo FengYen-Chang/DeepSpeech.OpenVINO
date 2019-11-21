@@ -8,7 +8,15 @@ Suggest using this [script](https://github.com/SeanNaren/deepspeech.pytorch/blob
 
 Enable it
 -------------------------
-In this repo, we provide several files, please following below step to enable it.
+In this repo, we provide several files, please following below step to enable it, separately. Or check each part via below link.
+* [Annotation converter](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#annotation-converter)
+* [Data reader](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#data-reader)
+* [Input feeder](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#input-feeder)
+* [Pre-processor](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#pre-processor)
+* [Launcher](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#launcher)
+* [Adapter](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#adapter)
+* [Metric](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#metrics)
+
 
 ### Annotation converter
 Please move [libri_speech.py](./annotation_converters/libri_speech.py) from this repo into direction `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/annotation_converters/`, and then following below step to register the `libri_speech` converter.
@@ -300,7 +308,7 @@ Please follow below step to patch `text_detection.py` which under direction `$OP
      ```
      >Note: Please refer to line [732](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/blob/master/accuracy_checker/adapters/text_detection.py#L732)
 
-### Metrics
+### Metric
 
 Please move [speech_recognition.py](./metrics/speech_recognition.py) and [word_error_meter.py](./metrics/word_error_meter.py) from this repo into direction `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/metrics/`, and then following below step to register the metric.
   * Register  into `__init__.py` which under direction `${OPENVINO_INSTALL_DIR}/deployment_tools/open_model_zoo/tools/accuracy_checher/accuracy_checher/metrics/`.
@@ -329,7 +337,3 @@ Please move [speech_recognition.py](./metrics/speech_recognition.py) and [word_e
                'SpeechRecognitionAccuracy'
            ]
            ```
-
-
-
-
