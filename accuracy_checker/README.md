@@ -10,8 +10,8 @@ Enable it
 -------------------------
 In this repo, we provide several files, please following below step to enable it, separately. Or check each part via below link.
 * [Annotation converter](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#annotation-converter)
-* [Data reader](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#data-reader)
 * [Input feeder](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#input-feeder)
+* [Data reader](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#data-reader)
 * [Pre-processor](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#pre-processor)
 * [Launcher](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#launcher)
 * [Adapter](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/tree/master/accuracy_checker#adapter)
@@ -40,6 +40,22 @@ Please move [libri_speech.py](./annotation_converters/libri_speech.py) from this
           ]
           ```
 
+### Input feeder
+Please follow below step to patch `input_feeder.py` which under direction `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/launcher/`.
+  * Add new input type `HIDDEN_STATE` into `input_feeder.py` 
+
+    ```py
+    if input_['type'] == 'CONST_INPUT':
+        if isinstance(value, list):
+            value = np.array(value)
+        constant_inputs[name] = value
+    elif input_['type'] == 'HIDDEN_STATE':
+        constant_inputs[name] = np.zeros(tuple(input_['shape']))
+    else:
+        config_non_constant_inputs.append(name)
+    ```
+    >Note: Please refer to line [148](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/blob/master/accuracy_checker/launcher/input_feeder.py#L148)
+
 ### Data reader
 Please check [data_reader.py](./data_readers/data_reader.py) and move class [`AudioReader`](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/blob/master/accuracy_checker/data_readers/data_reader.py#L168) into file `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/data_readers/data_reader.py`, and then following below step to register the `aduio` reader.
   * Register paser into `__init__.py` which under direction `${OPENVINO_INSTALL_DIR}/deployment_tools/open_model_zoo/tools/accuracy_checher/accuracy_checher/data_readers/`.
@@ -67,23 +83,7 @@ Please check [data_reader.py](./data_readers/data_reader.py) and move class [`Au
               'AudioReader'
           ]
           ```
-      
-### Input feeder
-Please follow below step to patch `input_feeder.py` which under direction `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/launcher/`.
-  * Add new input type `HIDDEN_STATE` into `input_feeder.py` 
 
-    ```py
-    if input_['type'] == 'CONST_INPUT':
-        if isinstance(value, list):
-            value = np.array(value)
-        constant_inputs[name] = value
-    elif input_['type'] == 'HIDDEN_STATE':
-        constant_inputs[name] = np.zeros(tuple(input_['shape']))
-    else:
-        config_non_constant_inputs.append(name)
-    ```
-    >Note: Please refer to line [148](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/blob/master/accuracy_checker/launcher/input_feeder.py#L148)
-   
 ### Pre-processor
 Please move [audio_preprocessors.py](./preprocessor/audio_preprocessors.py) from this repo into direction `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/preprocessor/`, and then following below step to register the pre-processors.
   * Register  into `__init__.py` which under direction `${OPENVINO_INSTALL_DIR}/deployment_tools/open_model_zoo/tools/accuracy_checher/accuracy_checher/preprocessor/`.
