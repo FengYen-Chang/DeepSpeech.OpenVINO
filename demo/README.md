@@ -21,7 +21,7 @@ It can be your own models, using pre-trained model via model downloader or downl
       --input=input_node,previous_state_h/read,previous_state_c/read \
       --input_shape=[1,16,19,26],[1,2048],[1,2048] \
       --output=Softmax,lstm_fused_cell/GatherNd,lstm_fused_cell/GatherNd_1 \
-      --freeze_placeholder_with_value=input_lengths->[16] \
+      --freeze_placeholder_with_value="input_lengths->[16]" \
       --disable_nhwc_to_nchw
       ```
 2. Via model downloader
