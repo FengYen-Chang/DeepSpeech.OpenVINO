@@ -1,0 +1,51 @@
+models:
+  - name: deepspeech
+    launchers:
+      - framework: dlsdk
+        device: CPU
+        inputs:
+          - name: 'input_node'
+            type: INPUT
+            shape: 16, 19, 26
+          - name: 'previous_state_h/read/placeholder_port_0'
+            type: HIDDEN_STATE
+            shape: [1, 2048]
+          - name: 'previous_state_c/read/placeholder_port_0'
+            type: HIDDEN_STATE
+            shape: [1, 2048]
+        model:   output_graph.xml
+        weights: output_graph.bin
+        adapter: 
+          type: beam_search_decoder
+          output_node: 'Softmax'
+          softmaxed_probabilities: True
+        cpu_extensions: AUTO
+        batch: 1
+        run_audio: True
+        audio_hidden_state: ['lstm_fused_cell/BlockLSTM/TensorIterator.1', 'lstm_fused_cell/BlockLSTM/TensorIterator.2']
+
+    datasets:
+      - name: libri_speech
+        reader: audio_reader
+        annotation: libri_speech.pickle
+        dataset_meta: libri_speech.json
+        data_source: dev-clean-wav
+
+        preprocessing:
+          - type: audio_normalizer
+          - type: audio_spectrogram
+            rate: 16000
+            window_length: 32
+            window_step: 20
+          - type: mfcc_feature
+            rate: 16000
+          - type: overlap_creator
+            step: 16
+            context: 9
+            input: 26
+          - type: audio_package
+            step: 16
+
+        metrics:
+          - type: speech_recognition_accuracy
+            threshold: 20
