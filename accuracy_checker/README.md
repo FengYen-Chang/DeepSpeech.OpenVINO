@@ -55,6 +55,23 @@ Please follow below step to patch `input_feeder.py` which under direction `$OPEN
         config_non_constant_inputs.append(name)
     ```
     >Note: Please refer to line [148](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/blob/master/accuracy_checker/launcher/input_feeder.py#L148)
+    
+   * Add new input type, `HIDDEN_STATE`, into function list `INPUTS_TYPES` which in the class `InputField` in the file `${OPENVINO_INSTALL_DIR}/deployment_tools/open_model_zoo/tools/accuracy_checker/accuracy_checker/config/config_validator.py`.
+
+
+     * Form:
+        
+        ```py
+        class InputField(BaseField):
+            INPUTS_TYPES = ('CONST_INPUT', 'INPUT', 'IMAGE_INFO')
+        ```
+
+     * To:
+        
+        ```py
+        class InputField(BaseField):
+            INPUTS_TYPES = ('CONST_INPUT', 'INPUT', 'IMAGE_INFO', 'HIDDEN_STATE')
+        ```
 
 ### Data reader
 Please check [data_reader.py](./data_readers/data_reader.py) and move class [`AudioReader`](https://github.com/FengYen-Chang/DeepSpeechOpenVINO/blob/master/accuracy_checker/data_readers/data_reader.py#L168) into file `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/data_readers/data_reader.py`, and then following below step to register the `aduio` reader.
@@ -120,6 +137,62 @@ Please move [audio_preprocessors.py](./preprocessor/audio_preprocessors.py) from
 ### Launcher
 
 Please follow below step to patch `dlsdk_launcher.py` which under direction `$OPEN_MODEL_ZOO_DIR/tools/accuracy_checker/accuracy_checker/launcher/`.
+
+  * Add config `_list_hidden_states` into function `parameters` and get the inputs in function `__init__.py` which under class `Launcher` in the file `${OPENVINO_INSTALL_DIR}/deployment_tools/open_model_zoo/tools/accuracy_checker/accuracy_checker/launcher/launcher.py` to aquire the nodes of hidden states.
+
+    * From:
+
+        ```py
+        class Launcher(ClassProvider):
+        
+        ...
+
+        def __init__(self, config_entry, *args, **kwargs):
+            
+            ...
+
+            self.image_info_inputs = self.config.get('_list_image_infos', [])
+
+        @classmethod
+        def parameters(cls):
+            return {
+
+                ...
+
+                '_list_image_infos': ListField(
+                    allow_empty=True, optional=True, default=[], description="List of image information inputs."
+                )
+            }
+        ```
+
+    * To:
+
+        ```py
+        class Launcher(ClassProvider):
+        
+        ...
+
+        def __init__(self, config_entry, *args, **kwargs):
+            
+            ...
+
+            self.image_info_inputs = self.config.get('_list_image_infos', [])
+            self.hidden_state_inputs = self.config.get('_list_hidden_states', [])
+
+        @classmethod
+        def parameters(cls):
+            return {
+
+                ...
+
+                '_list_image_infos': ListField(
+                    allow_empty=True, optional=True, default=[], description="List of image information inputs."
+                ),
+                '_list_hidden_states': ListField(
+                    allow_empty=True, optional=True, default=[], description="List of inputs of hidden state."
+                )
+            }
+        ```
   
   * Add flag `run_audio` and `audio_hidden_state` into function `parameters` which under class `DLSDKLauncher`.
 
