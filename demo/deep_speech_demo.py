@@ -39,10 +39,6 @@ def build_argparser():
     args.add_argument("-i", "--input", help="Required. Path to an audio file.",
                       required=True,
                       type=str)
-    args.add_argument("-l", "--cpu_extension",
-                      help="Optional. Required for CPU custom layers. "
-                           "MKLDNN (CPU)-targeted custom layers. Absolute path to a shared library with the"
-                           " kernels implementations.", type=str, default=None)
     args.add_argument("-d", "--device",
                       help="Optional. Specify the target device to infer on; CPU, GPU, FPGA, HDDL, MYRIAD or HETERO: is "
                            "acceptable. The sample will look for a suitable plugin for device specified. Default "
@@ -118,18 +114,6 @@ def main():
     assert len(net.inputs.keys()) == 3, "Sample supports only three input topologies"
     assert len(net.outputs) == 3, "Sample supports only three output topologies"
 
-    log.info("Preparing input blobs")
-    input_iter = iter(net.inputs)
-    input_blob1 = next(input_iter)
-    input_blob2 = next(input_iter)
-    input_blob3 = next(input_iter)
-    
-    log.info("Preparing output blobs")
-    output_iter = iter(net.outputs)
-    output_blob1 = next(output_iter)
-    output_blob2 = next(output_iter)
-    output_blob3 = next(output_iter)
-
     # Loading model to the plugin
     log.info("Loading model to the plugin")
     exec_net = ie.load_network(network=net, device_name=args.device)
@@ -151,14 +135,14 @@ def main():
                            mode='constant',
                            constant_values=0)
 
-        res = exec_net.infer(inputs={'previous_state_c/read/placeholder_port_0': state_c,
-                                     'previous_state_h/read/placeholder_port_0': state_h,
+        res = exec_net.infer(inputs={'previous_state_c': state_c,
+                                     'previous_state_h': state_h,
                                       'input_node': [chunk]})
                                       
         # Processing output blob
-        logits = np.concatenate((logits, res['Softmax']))
-        state_h = res['lstm_fused_cell/BlockLSTM/TensorIterator.1']
-        state_c = res['lstm_fused_cell/BlockLSTM/TensorIterator.2']
+        logits = np.concatenate((logits, res['logits']))
+        state_h = res['cudnn_lstm/rnn/multi_rnn_cell/cell_0/cudnn_compatible_lstm_cell/BlockLSTM/TensorIterator.1']
+        state_c = res['cudnn_lstm/rnn/multi_rnn_cell/cell_0/cudnn_compatible_lstm_cell/BlockLSTM/TensorIterator.2']
         
     print ("\n>>>{}\n".format(ctc_beam_search_decoder(logits, alphabet, alphabet[-1], beamwidth)))
 
