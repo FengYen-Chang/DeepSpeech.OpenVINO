@@ -95,8 +95,6 @@ def main():
     # Plugin initialization for specified device and load extensions library if specified
     log.info("Creating Inference Engine")
     ie = IECore()
-    if args.cpu_extension and 'CPU' in args.device:
-        ie.add_extension(args.cpu_extension, "CPU")
     # Read IR
     log.info("Loading network files:\n\t{}\n\t{}".format(model_xml, model_bin))
     net = IENetwork(model=model_xml, weights=model_bin)
