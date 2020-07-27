@@ -78,7 +78,7 @@ def mfcc_mel_filiterbank_init(sample_rate, input_length) :
     # init
     filterbank_channel_count_   = 40
     lower_frequency_limit_      = 20
-    upper_frequency_limit_      = 4000
+    upper_frequency_limit_      = 8000
 
     def freq2mel(freq) :
         return 1127.0 * np.log1p(freq / 700)
