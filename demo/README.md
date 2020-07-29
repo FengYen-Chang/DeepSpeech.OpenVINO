@@ -12,12 +12,12 @@ It can be your own models, using pre-trained model via model downloader or downl
 1. Download and convert pre-trained model by yourself
     * Download the pre-trained model.
       ```sh
-      wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.6.1/deepspeech-0.6.1-models.tar.gz | tar xvfz -
+      wget -O - https://github.com/mozilla/DeepSpeech/releases/download/v0.7.4/deepspeech-0.7.4-models.pb
       ```
     * Convert the pre-trained model to Intermediate Representation (IR) by Model Optimizer with the following parameters.
       ```sh
       python3 ./mo_tf.py \
-      --input_model=$dl_dir/deepspeech-0.6.1-models/output_graph.pb \
+      --input_model=$dl_dir/deepspeech-0.7.4-models.pb \
       --input=input_node,previous_state_h,previous_state_c \
       --input_shape=[1,16,19,26],[1,2048],[1,2048] \
       --output=logits,cudnn_lstm/rnn/multi_rnn_cell/cell_0/cudnn_compatible_lstm_cell/GatherNd,cudnn_lstm/rnn/multi_rnn_cell/cell_0/cudnn_compatible_lstm_cell/GatherNd_1 \
