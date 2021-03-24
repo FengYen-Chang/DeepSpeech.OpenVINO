@@ -124,17 +124,6 @@ def main():
     log.info("Loading network files:\n\t{}\n\t{}".format(model_xml, model_bin))
     net = IENetwork(model=model_xml, weights=model_bin)
 
-    """
-    if "CPU" in args.device:
-        supported_layers = ie.query_network(net, "CPU")
-        not_supported_layers = [l for l in net.layers.keys() if l not in supported_layers]
-        if len(not_supported_layers) != 0:
-            log.error("Following layers are not supported by the plugin for specified device {}:\n {}".
-                      format(args.device, ', '.join(not_supported_layers)))
-            log.error("Please try to specify cpu extensions library path in sample's command line parameters using -l "
-                      "or --cpu_extension command line argument")
-            sys.exit(1)
-    """
     assert len(net.inputs.keys()) == 3, "Sample supports only three input topologies"
     assert len(net.outputs) == 3, "Sample supports only three output topologies"
 
